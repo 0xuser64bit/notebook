@@ -8,19 +8,16 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
+import { useParams } from "next/navigation";
 
-interface documentIdProps {
-  params: {
-    documentId: Id<"documents">;
-  };
-}
-const DocumentId = ({ params }: documentIdProps) => {
+const DocumentId = () => {
+  const params = useParams();
   const Editor = useMemo(
     () => dynamic(() => import("@/components/Editor"), { ssr: false }),
     [],
   );
   const document = useQuery(api.documents.getById, {
-    documentId: params.documentId,
+    documentId: params.documentId as Id<"documents">,
   });
 
   if (document === undefined) {
@@ -49,7 +46,7 @@ const DocumentId = ({ params }: documentIdProps) => {
         <Editor
           editable={false}
           initialContent={document.content}
-          documentId={params.documentId}
+          documentId={params.documentId as Id<"documents">}
         />
       </div>
     </div>
